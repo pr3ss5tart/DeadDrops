@@ -2,19 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class KeyboardScript : MonoBehaviour
 {
 
+    //public delegate void SendMessage(object source, EventArgs args, string s);
+    //public event SendMessage MessageSent;
+
+    public event EventHandler<string> OnMessageSent;
+
     public InputField TextField;
     public GameObject RusLayoutSml, RusLayoutBig, EngLayoutSml, EngLayoutBig, SymbLayout;
-    public string code = "";
+    public string text = "";
+    public enum keyboard_types { CODE_KEYBOARD, CLUES_KEYBOARD };
+    public keyboard_types Keyboard_Type;
 
     public void alphabetFunction(string alphabet)
     {
 
         TextField.text=TextField.text + alphabet;
-        code += alphabet;
+        text += alphabet;
 
     }
 
@@ -44,9 +52,17 @@ public class KeyboardScript : MonoBehaviour
 
     }
 
-    public string Send_Code()
+    public void Send_Text()
     {
-        return code;
+        OnMessageSentHandler();
+        text = "";
+        TextField.text = ""; 
+    }
+
+    protected virtual void OnMessageSentHandler()
+    {
+            Debug.Log("Message sent: " + text);
+            OnMessageSent?.Invoke(this,text);   
     }
 
 }
